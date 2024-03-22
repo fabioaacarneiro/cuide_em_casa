@@ -11,36 +11,25 @@ use PDOException;
  */
 class Connection
 {
-    private $pdo;
-
-    /**
-     * create a object of Connection and initialize $pdo attribute
-     *
-     * @params object $config object with connection data
-     */
-    private function __construct(object $config)
-    {
-
-        $dsn = $config->dbserver.':host='.$config->host.';dbname='.$config->dbname;
-
-        try {
-            $this->pdo = new PDO($dsn, $config->user, $config->pass);
-            echo 'conectado com sucesso';
-        } catch (PDOException $exc) {
-            exit('Erro ao conectar ao bando de dados: '.$exc->getMessage());
-        }
-    }
-
     /**
      * make a Connection instance and return her $pdo attribute
      *
      * @return PDO instance
      */
-    public static function connect()
+    public static function connect(): PDO
     {
-        $config = (object) require_once 'database.php';
-        $conn = new Connection($config);
+        $config = require_once 'database.php';
+        $dsn = $config->dbserver.':host='.$config->host.';dbname='.$config->dbname;
 
-        return $conn->pdo;
+        try {
+
+            $pdo = new PDO($dsn, $config->user, $config->pass);
+
+            return $pdo;
+
+        } catch (PDOException $exc) {
+            exit('Erro ao conectar ao bando de dados: '.$exc->getMessage());
+        }
+
     }
 }
