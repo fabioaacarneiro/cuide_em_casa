@@ -1,0 +1,16 @@
+{
+    "name": "fabio/projeto_estudo",
+    "autoload": {
+        "psr-4": {
+            "App\\": "app/"
+        },
+        "files": ["app/Util/functions.php"]
+    },
+    "authors": [
+        {
+            "name": "Fabio Carneiro",
+            "email": "fabioaacarneiro@gmail.com"
+        }
+    ],
+    "require": {"php": "^8.0"}
+}
