@@ -8,8 +8,7 @@ use PDOException;
 /**
  * Class thats implement connection with databse
  * with PDO Class
- */
-class Connection
+ */ class Connection
 {
     /**
      * make a Connection instance and return her $pdo attribute
