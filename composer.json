@@ -12,7 +12,8 @@
             "email": "fabioaacarneiro@gmail.com"
         }
     ],
-    "require": {"php": "^8.0"},
+    "require": {"php": "^8.0",
+        "tracy/tracy": "^2.10"},
     "require-dev": {
         "kint-php/kint": "^5.1"
     }

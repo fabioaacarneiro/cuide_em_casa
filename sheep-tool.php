@@ -10,13 +10,18 @@ if ($argc < 2) {
 
 $migrationsDir = 'app/Database/migrations/';
 
+/**
+ * @param  string  $filename  filename of the migration
+ *
+ * @use string $migrationsDir local var with the migrations location
+ */
 $migration = function (string $filename) use ($migrationsDir) {
-    if (file_exists($migrationsDir.$filename)) {
-        Kint::dump('A migration: '.$filename.' já existe.');
+    if (file_exists($migrationsDir . $filename . '.php')) {
+        d('A migration: ' . $filename . ' já existe.');
         exit();
     }
 
-    $filepathOutput = $migrationsDir.$filename.'.php';
+    $filepathOutput = $migrationsDir . $filename . '.php';
 
     $outputMigration = "<?php
 
@@ -36,11 +41,46 @@ class $filename
 }";
 
     if (file_put_contents($filepathOutput, $outputMigration) !== false) {
-        Kint::dump('Migration: '.$filename.' criada com sucesso!');
+        Kint::dump('Migration: ' . $filename . ' criada com sucesso!');
     } else {
-        Kint::dump('Migration: '.$filename.' não pode ser criada!');
+        Kint::dump('Migration: ' . $filename . ' não pode ser criada!');
     }
+};
 
+/**
+ * run all migrations on Database
+ */
+$migrate = function (string $migrateOrRollback = 'migrate') use ($migrationsDir) {
+
+    $files = scandir($migrationsDir);
+    $files = array_diff($files, ['.', '..']);
+
+    foreach ($files as $file) {
+        $pathFile = $migrationsDir . $file;
+        if (is_file($pathFile) && pathinfo($pathFile, PATHINFO_EXTENSION) === 'php') {
+
+            require_once $pathFile;
+
+            $className = pathinfo($pathFile, PATHINFO_FILENAME);
+            if ($migrateOrRollback === 'migrate') {
+                try {
+                    $className::up();
+                    d("Migration: $className executou com sucesso!");
+                } catch (Exception $e) {
+                    d("Migration: $className falhou!\nErro: " . $e->getMessage());
+                }
+            } else {
+                try {
+                    $className::down();
+                    d("Rollback: $className executou com sucesso!");
+                } catch (Exception $e) {
+                    d("Rollback: $className falhou!\nErro: " . $e->getMessage());
+                }
+            }
+        } else {
+            echo "O arquivo '$file' não é um arquivo PHP válido ou não foi encontrado.";
+        }
+    }
 };
 
 switch ($argv[1]) {
@@ -48,7 +88,15 @@ switch ($argv[1]) {
         $migration($argv[2]);
         break;
 
+    case 'migrate':
+        $migrate();
+        break;
+
+    case 'migrate:rollback':
+        $migrate('rollback');
+        break;
+
     default:
-        // code...
+        d('argumento inválido');
         break;
 }

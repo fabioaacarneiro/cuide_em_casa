@@ -14,8 +14,6 @@ class DB
 
     private array $columns;
 
-    private PDO $pdo;
-
     private function __construct(string $table)
     {
         $this->table = $table;
@@ -32,7 +30,6 @@ class DB
     public static function table(string $name): DB
     {
         $newTable = new DB($name);
-        $newTable->pdo = Connection::connect();
 
         return $newTable;
     }
@@ -57,6 +54,114 @@ class DB
     }
 
     /**
+     * add column type VARCHAR on database
+     *
+     * @param  string  $name  name of column
+     * @param  int  $length  legth of column, default value is 255
+     * @return DB instance
+     */
+    public function string(string $name, int $length = 255): DB
+    {
+        $this->columns[] = [
+            'type' => 'VARCHAR',
+            'name' => $name,
+            'length' => $length,
+        ];
+
+        return $this;
+    }
+
+    /**
+     * add column type INT on database
+     *
+     * @param  string  $name  name of column
+     * @param  int  $length  legth of column, default value is 255
+     * @return DB instance
+     */
+    public function int(string $name, int $length = 255): DB
+    {
+        $this->columns[] = [
+            'type' => 'INT',
+            'name' => $name,
+            'length' => $length,
+        ];
+
+        return $this;
+    }
+
+    /**
+     * add column type TEXT on database
+     *
+     * @param  string  $name  name of column
+     * @param  int  $length  legth of column, default value is 255
+     * @return DB instance
+     */
+    public function text(string $name, int $length = 255): DB
+    {
+        $this->columns[] = [
+            'type' => 'TEXT',
+            'name' => $name,
+            'length' => $length,
+        ];
+
+        return $this;
+    }
+
+    /**
+     * add column type DATE on database
+     *
+     * @param  string  $name  name of column
+     * @param  int  $length  legth of column, default value is 255
+     * @return DB instance
+     */
+    public function date(string $name, int $length = 255): DB
+    {
+        $this->columns[] = [
+            'type' => 'DATE',
+            'name' => $name,
+            'length' => $length,
+        ];
+
+        return $this;
+    }
+
+    /**
+     * add column type FLOAT on database
+     *
+     * @param  string  $name  name of column
+     * @param  int  $length  legth of column, default value is 255
+     * @return DB instance
+     */
+    public function float(string $name, int $length = 255): DB
+    {
+        $this->columns[] = [
+            'type' => 'FLOAT',
+            'name' => $name,
+            'length' => $length,
+        ];
+
+        return $this;
+    }
+
+    /**
+     * add column type BOOLEAN on database
+     *
+     * @param  string  $name  name of column
+     * @param  int  $length  legth of column, default value is 255
+     * @return DB instance
+     */
+    public function boolean(string $name): DB
+    {
+        $this->columns[] = [
+            'type' => 'BOOLEAN',
+            'name' => $name,
+            'length' => '',
+        ];
+
+        return $this;
+    }
+
+    /**
      * create a table if not exists
      */
     public function createTableIfNotExists()
@@ -64,13 +169,21 @@ class DB
         $columns = implode(', ', array_map(function ($column) {
             $name = $column['name'];
             $type = $column['type'];
-            $length = isset($column['length']) ? "($column[length])" : '';
+            $length = $column['length'];
 
-            return "$name $type$length";
+            return $length = "$name $type ($length)";
         }, $this->columns));
 
-        $sql = 'CREATE TABLE IF NOT EXISTS '.$this->table.'('.$columns.')';
+        $sql = 'CREATE TABLE IF NOT EXISTS ' . $this->table . '(' . $columns . ')';
+        $sql = str_replace('()', '', $sql);
+        $pdo = Connection::connect();
+        $pdo->exec($sql);
+    }
 
-        $this->pdo->exec($sql);
+    public function dropTableIfExists()
+    {
+        $sql = 'DROP TABLE IF EXISTS ' . $this->table . ';';
+        $pdo = Connection::connect();
+        $pdo->exec($sql);
     }
 }
