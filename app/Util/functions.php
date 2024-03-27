@@ -11,14 +11,14 @@
  *
  * @return string uri requested
  */
-function requestUri(): string
+function requestUrl(): string
 {
-    $uri = $_SERVER['REQUEST_URI'];
-    if (isset($uri)) {
-        return $uri;
+    $url = '';
+    if (isset($_SERVER['REQUEST_URI'])) {
+        $url = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
     }
 
-    return '';
+    return $url;
 }
 
 /**
@@ -50,43 +50,30 @@ function projectName(): string
  * @param string? $path path of included in return
  * @return string complete path
  */
-function rootPath(?string $path = null): string
+function rootPath(?string $path = ''): string
 {
-    $documentRoot = $_SERVER['DOCUMENT_ROOT'];
-    $projectName = projectName();
-    $pathOfProject = $documentRoot.'/'.$projectName;
-    $completePath = '';
+    $protocol = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http';
+    $host = $_SERVER['HTTP_HOST'];
+    $base_url = $protocol.'://'.$host;
 
-    if (! is_null($path)) {
-        $completePath = $pathOfProject.'/'.$path;
-
-        return $completePath;
-    }
-
-    return $pathOfProject;
+    return $base_url.$path;
 }
 
 /**
  * return desired file on assest folder
  *
  * @param string? $path name of desired file
- * @return string complete path of desired file
  */
-function assets(?string $path = null): string
+function assets(?string $path = null)
 {
     $completePath = '';
-    $rootPath = rootPath();
-    if (! is_null($path)) {
-        $completePath = $rootPath.'/'.$path;
 
-        return $path;
-    } else {
-        exit('Error: assets() aguarda uma string como parametro, recebido: '.gettype($path));
+    $assetsPath = __DIR__.'/../../public/assets/';
+
+    if (file_exists($assetsPath.$path)) {
+        $completePath = rootPath('/assets/'.$path);
     }
 
-    if (! file_exists($completePath)) {
-        exit('Error: Arquivo inexistente ou nome inválido: '.$completePath);
-    }
+    echo $completePath;
 
-    return $completePath;
 }

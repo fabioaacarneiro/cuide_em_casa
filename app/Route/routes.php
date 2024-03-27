@@ -8,7 +8,7 @@ use App\Controllers\HomeController;
 /**
  * all routes of application is declared on this array
  */
-return [
+return (object) [
     '/' => [ // uri to page view
         'method' => 'GET', // verb http to allowed in this route
         'controller' => HomeController::class, // controller of route

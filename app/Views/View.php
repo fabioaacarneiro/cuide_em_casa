@@ -2,8 +2,6 @@
 
 namespace App\Views;
 
-use Exception;
-
 /**
  * implement view system
  */
@@ -19,13 +17,12 @@ class View
     {
         extract($data);
 
-        $viewPath = rootPath('app/Templates/'.$view.'.php');
+        $viewPath = __DIR__.'/../Templates/'.$view.'.php';
 
-        if (file_exists($viewPath)) {
-            include $viewPath;
-        } else {
-            throw new Exception("O arquivo da página '{$viewPath}' não pode ser encontrado.");
+        if (! file_exists($viewPath)) {
+            d('View: '.$viewPath.' não encontrado.');
         }
+        include $viewPath; // Inclui o arquivo da view
     }
 
     /**
@@ -38,12 +35,12 @@ class View
     {
         extract($data);
 
-        $partialPath = rootPath('app/Templates/partials/'.$partial.'.php');
+        $partialPath = __DIR__.'/../Templates/partials/'.$partial.'.php';
 
-        if (file_exists($partialPath)) {
-            require $partialPath;
-        } else {
-            throw new Exception("Partials '{$partialPath}' não existe");
+        if (! file_exists($partialPath)) {
+            d("Partial: '{$partialPath}' não encontrado");
         }
+
+        include $partialPath;
     }
 }
