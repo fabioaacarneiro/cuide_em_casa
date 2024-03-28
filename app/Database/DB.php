@@ -41,14 +41,20 @@ class DB
         return $newTable;
     }
 
-    public function find(int $id)
+    /**
+     * find on database some register with id
+     *
+     * @param  int  $id  id of register
+     * @return array data found on database
+     */
+    public function find(int $id): array
     {
         $sql = 'SELECT * FROM '.$this->table.' WHERE id = :id;';
         $pdo = Connection::connect();
         $stmt = $pdo->prepare($sql);
         $stmt->bindParam(':id', $id, PDO::PARAM_INT);
         $stmt->execute();
-        $user = $stmt->fetch();
+        $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
         if (! $user) {
             throw new Exception('Usuário com id: '.$id.', não encontrado.');
@@ -79,6 +85,23 @@ class DB
     }
 
     /**
+     * define if column can be NULL or not
+     *
+     * @param  bool  $isNull  in default all columns can be
+     *                        NULL but you can pass false to nullable function to
+     *                        make this column not nullable.
+     * @return DB instance of class
+     */
+    public function nullable(bool $isNull = true)
+    {
+        $this->columns[] = [
+            'nullable' => ($isNull) ? 'NULL' : 'NOT NULL',
+        ];
+
+        return $this;
+    }
+
+    /**
      * add column type VARCHAR on database
      *
      * @param  string  $name  name of column
@@ -92,7 +115,6 @@ class DB
             'type' => 'VARCHAR',
             'name' => $name,
             'length' => $length,
-            'nullable' => ($nullable) ? 'NULL' : 'NOT NULL',
         ];
 
         return $this;
@@ -251,6 +273,12 @@ class DB
         $pdo->exec($sql);
     }
 
+    /**
+     * create a data to register in database
+     *
+     * @param  array  $data  array of data to register
+     * @return DB object return instance of class
+     */
     public function create(array $data)
     {
 
@@ -267,18 +295,24 @@ class DB
         return $this;
     }
 
-    public function save()
+    /**
+     * method to save on database builded object
+     *
+     * @return array data of new register on database
+     */
+    public function save(): array
     {
+        $savedData = [];
         try {
             $this->statement->execute();
 
             $savedData = static::table($this->table)
                 ->find($this->pdo->lastInsertId());
 
-            return $savedData;
-
         } catch (PDOException $e) {
             d('Erro ao inserir o registro: '.$e->getMessage());
         }
+
+        return $savedData;
     }
 }

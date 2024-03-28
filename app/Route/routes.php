@@ -14,6 +14,11 @@ return (object) [
         'controller' => HomeController::class, // controller of route
         'action' => 'index', // method of controller thats is maped by route
     ],
+    '/store-user-test' => [ // uri to page view
+        'method' => 'GET', // verb http to allowed in this route
+        'controller' => HomeController::class, // controller of route
+        'action' => 'storeUser', // method of controller thats is maped by route
+    ],
     '/about' => [
         'method' => 'GET',
         'controller' => AboutController::class,

@@ -7,12 +7,12 @@ class UserTable
     public static function up()
     {
         DB::table('user')
-            ->int('id', 11)
-            ->string('name', 20)
+            ->primaryKey('id')
+            ->string('nome', 20, false)
             ->string('sobrenome', 20)
-            ->string('telefone', 11)
-            ->boolean('is_active')
+            ->int('idade', 3)
             ->createTableIfNotExists();
+
     }
 
     public static function down()
