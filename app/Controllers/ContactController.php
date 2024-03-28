@@ -10,7 +10,7 @@ class ContactController extends Controller
     {
 
         $data = [
-            'title' => 'contato',
+            'title' => projectName(),
             'message' => 'esta é a página contato',
         ];
 

@@ -8,5 +8,5 @@ namespace App\Models;
  */
 class Model
 {
-    // needs implements class construction
+    /** TODO needs implements class construction */
 }

@@ -10,7 +10,7 @@ class AboutController
     {
 
         $data = [
-            'title' => 'sobre',
+            'title' => projectName(),
             'message' => 'esta é a página sobre',
         ];
 

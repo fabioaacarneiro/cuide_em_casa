@@ -17,7 +17,7 @@ use PDOException;
      */
     public static function connect(): PDO
     {
-        $config = require_once 'database.php';
+        $config = require __DIR__.'/database.php';
         $dsn = $config->dbserver.':host='.$config->host.';dbname='.$config->dbname;
 
         try {

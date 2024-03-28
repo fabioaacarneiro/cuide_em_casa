@@ -28,12 +28,12 @@ function requestUrl(): string
  */
 function requestMethod(): string
 {
-    $method = $_SERVER['REQUEST_METHOD'];
-    if (isset($method)) {
-        return $method;
+    $method = '';
+    if (isset($_SERVER['REQUEST_METHOD'])) {
+        $method = $_SERVER['REQUEST_METHOD'];
     }
 
-    return '';
+    return $method;
 }
 
 /**
@@ -43,7 +43,7 @@ function requestMethod(): string
  */
 function projectName(): string
 {
-    return 'cuide_em_casa';
+    return 'Cuide em Casa';
 }
 
 /**
@@ -54,9 +54,8 @@ function rootPath(?string $path = ''): string
 {
     $protocol = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http';
     $host = $_SERVER['HTTP_HOST'];
-    $base_url = $protocol.'://'.$host;
 
-    return $base_url.$path;
+    return $protocol.'://'.$host.$path;
 }
 
 /**
@@ -66,14 +65,5 @@ function rootPath(?string $path = ''): string
  */
 function assets(?string $path = null)
 {
-    $completePath = '';
-
-    $assetsPath = __DIR__.'/../../public/assets/';
-
-    if (file_exists($assetsPath.$path)) {
-        $completePath = rootPath('/assets/'.$path);
-    }
-
-    echo $completePath;
-
+    echo rootPath('/assets/'.$path);
 }

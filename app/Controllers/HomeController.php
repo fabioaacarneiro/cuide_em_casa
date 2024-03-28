@@ -10,17 +10,27 @@ class HomeController
     public function index()
     {
 
-        $userTable = DB::table('user')
-            ->column('id', 'INT', 11)
-            ->column('nome', 'VARCHAR', 20)
-            ->column('sobrenome', 'VARCHAR', 20)
-            ->column('idade', 'INT', 3)
+        DB::table('user')
+            ->primaryKey('id')
+            ->string('nome', 20)
+            ->string('sobrenome', 20)
+            ->int('idade', 3)
             ->createTableIfNotExists();
 
+        // $user = DB::table('user')->create([
+        //     'id' => null,
+        //     'nome' => 'Fabio',
+        //     'sobrenome' => 'Carneiro',
+        //     'idade' => 33,
+        // ])->save();
+
+        $user = DB::table('user')
+            ->find(5);
+
         $data = [
-            'title' => 'home',
+            'title' => projectName(),
             'message' => 'esta é a página home',
-            'table' => $userTable,
+            'user' => $user,
         ];
 
         return View::render('home', $data);
